@@ -1,24 +1,24 @@
 # Your name and what you do
-name: Eve Adam
+name: Žiga Putrle
 bio: Software Developer
 
-description: Eve Adam's Personal Website
+description: Ziga Putrle's Personal Website
 
 # Profile picture
-picture: assets/images/profile.jpg
+picture: assets/images/profile_photo_3_50.jpg
 
 # your url: http://USERNAME.github.io
-url: https://jibolash.github.io/Eve/
+url: zputrle.com
 
 # do you want to display social media links? true or false
 social-media: true
 # Add your username for the social media websites listed below
 # If you don't have an account on any of them, comment out the line
 # facebook: myfacebook
-twitter: mytwitter
-linkedin: mylinkedin
-github: mygithub
-email: myemail@gmail.com
+#twitter: mytwitter
+#linkedin: mylinkedin
+github: zputrle
+email: contact@zputrle.com
 # google: mygoogle
 # instagram: myinstagram
 # pinterest: mypinterest
@@ -41,47 +41,28 @@ width: normal
 about: true
 
 # do you want to display a skills section? true or false
-skills: true
+skills: false
 
 # add your skills here
 skills-list:
-    - HTML, Jade
-    - CSS (Stylus, Sass, Less)
-    - Javascript, NodeJS
-    - AngularJS, ReactJS
-    - Java, Android
-    - Python
-    - MySQL - MongoDB    
-    - Git    
+    - Go, C
+    - ...
 
 # do you want to display a projects section? true or false
-projects: true
+projects: false
 
 # add your projects here
 project-list:
-    Eve:
-        name: Eve
-        description: Ultra Minimal Single-page Jekyll Template for Building Personal Portfolio Websites
-        url: https://github.com/jibolash/Eve
-    World-Cup-History:
-        name: World Cup  History
-        description: npm package for FIFA World cup historical data
-        url: https://github.com/jibolash/world-cup-history
-    Tweeter:
-        name: Tweeter
-        description: A Twitter inspired web application built with Angular 5
-        url: https://tweetermum.herokuapp.com
-    Transcend:
-        name: Transcend
-        description: An android app for meditation and mindfulness
-        url: https://github.com/Khosbayar/Transcend
-
+    NameOfTheProject:
+        name: Example
+        description: Just a description ... 
+        url: url ...
 
 # do you want to display the theme attribution? true or false
-footer: true
+footer: false
 
 # Enable animations? true or false
-animation: true
+animation: false
 
 gems:
   - jekyll-seo-tag
