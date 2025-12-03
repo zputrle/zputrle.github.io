@@ -18,7 +18,7 @@ social-media: true
 #twitter: mytwitter
 #linkedin: mylinkedin
 github: zputrle
-email: contact@zputrle.com
+email: contact (at) zputrle.com
 # google: mygoogle
 # instagram: myinstagram
 # pinterest: mypinterest
@@ -38,7 +38,7 @@ email: contact@zputrle.com
 width: normal
 
 # do you want to display an about section? true or false
-about: true
+about: false
 
 # do you want to display a skills section? true or false
 skills: false
@@ -64,7 +64,7 @@ footer: false
 # Enable animations? true or false
 animation: false
 
-gems:
+plugins:
   - jekyll-seo-tag
 
 exclude: [README.md, Gemfile, Gemfile.lock, _site, Rakefile, travis.sh, vendor]
