@@ -32,7 +32,9 @@
 
         body {
             margin: 0;
-            padding: 105px 20px;
+            /* top padding scales with viewport height (bounded), so the
+               page isn't pinned too close to the top edge on short/tall screens */
+            padding: clamp(30px, 8vh, 105px) 20px 40px;
             font: 16px var(--font-main);
             color: var(--color-text);
             background: #fff;
@@ -124,7 +126,8 @@
         /* small screens (phones): tighten spacing & headings */
         @media (max-width: 480px) {
             body {
-                padding: 30px 14px;
+                padding-left: 14px;
+                padding-right: 14px;
             }
 
             /* on phones 40vw reads too small next to the name/title, so
