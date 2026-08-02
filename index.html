@@ -1,4 +1,161 @@
----
-layout: default
-title: Home
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- === EDIT ME: page title & description === -->
+    <title>Home | zputrle</title>
+    <meta name="description" content="Žiga Putrle - Software Engineer">
+    <meta name="author" content="Žiga Putrle">
+
+    <!-- Social preview (Facebook, LinkedIn, Twitter, etc.) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Žiga Putrle">
+    <meta property="og:title" content="Žiga Putrle">
+    <meta property="og:description" content="Žiga Putrle - Software Engineer">
+    <meta property="og:url" content="https://zputrle.com/">
+    <meta name="twitter:card" content="summary">
+
+    <link rel="canonical" href="https://zputrle.com/">
+
+    <style>
+        /* EDIT ME: colors & fonts */
+        :root {
+            --color-text: #666;
+            --color-heading: #222;
+            --color-accent: indigo;
+            --color-muted: #aaa;
+            --color-border: #ededed;
+            --font-main: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 75px 20px;
+            font: 16px var(--font-main);
+            color: var(--color-text);
+            background: #fff;
+            text-align: center;
+        }
+
+        .page {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* profile photo (shrinks with viewport, capped at 170px) */
+        .photo {
+            width: 310px;
+            max-width: 40vw;
+            aspect-ratio: 1 / 1;
+            border-radius: 100%;
+            margin-bottom: 40px;
+        }
+
+        /* name & title */
+        h1 {
+            font-size: 2.3rem;
+            letter-spacing: -1px;
+            color: var(--color-heading);
+            margin: 0 0 8px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--color-muted);
+            margin: 0 0 30px;
+        }
+
+        /* links list (edit text/URLs below in the body) */
+        /* stacked vertically: Projects, then the dot, then the email */
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+        }
+
+        .links a {
+            line-height: 1;
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .links .separator {
+            line-height: 1;
+            color: var(--color-muted);
+            font-size: 1.8em;
+        }
+
+        /* footer */
+        footer {
+            position: relative;
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border);
+            font-size: 0.9rem;
+            color: var(--color-muted);
+        }
+
+        /* small circle centered on the divider line above the footer */
+        footer::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            width: 7px;
+            height: 7px;
+            margin-left: -4.5px;
+            background: #fff;
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            /* white halo overpaints the line on either side so it stops short of the circle */
+            box-shadow: 0 0 0 5px #fff;
+        }
+
+        /* small screens (phones): tighten spacing & headings */
+        @media (max-width: 480px) {
+            body {
+                padding: 30px 14px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+
+        <img class="photo" src="imgs/profile_photo_gray.jpg" alt="Žiga Putrle">
+        <h1>Žiga Putrle</h1>
+        <p class="subtitle">Software Engineer</p>
+
+        <p class="links">
+            <a href="mailto:contact (at) zputrle.com">contact (at) zputrle.com</a>
+            <span class="separator">&middot;</span>
+            <a href="https://github.com/zputrle">projects</a>
+        </p>
+
+        <footer>
+            Žiga Putrle &copy; 2026
+        </footer>
+
+    </div>
+
+</body>
+</html>
