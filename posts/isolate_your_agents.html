@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <link
+      rel="stylesheet"
+      href="./src/lnew.css"
+    />
+    <link rel="stylesheet" href="./src/theme.css">
+    <meta name="generator" content="pandoc" />
+        <meta name="author" content="zputrle" />
+         <title>Isolate your agents</title>
+
+      
+  </head>
+  <body>
+    <main>
+      <div class="title-row">
+      <h1>Isolate your agents</h1>
+      <div class="time-author">11th of August 2026 - zputrle</div>
+      </div>
+
+             <article><p>I love the idea behind <a
+href="https://www.qubes-os.org/">QubesOS</a>: just keep everything in
+separate, isolated environments. What’s the benefit? If something goes
+wrong in one of the environments, which eventually will, we can be
+reasonably sure that other environments and documents within them, are
+safe.</p>
+<p>Additionally, QubesOS allows us to keep our environments clean. If we
+want to try something out, we can just spin up a new environment
+(essentially a new virtual machine (VM)), install the packages that we
+need, do the experiment, and discard the environment when it’s no longer
+needed. The other environments remain unchanged. (Footnote 1)</p>
+<p>How is this related to AI agents?</p>
+<p>Running <a href="https://claude.com/product/claude-code">Claude
+Code</a> locally in auto mode is reckless, as its hard to know what
+Claude Code actually changed – from newly installed packages to modified
+files. At the end of the session, we have no idea which parts of the
+system were touched by Claude.</p>
+<p>I’m sure Claude Code’s documentation explains what Claude actually
+does and when it asks for permission, but I don’t want to read through
+Claude’s documentation every time there is an update, and I don’t trust
+Claude to exhaustively enforce the rules described in its
+documentation.</p>
+<p>This makes Claude Code a perfect candidate for running in an isolated
+environment with access only to the files we allow it to see and use.
+Nicely isolated from everything else.</p>
+<p>So, what are we aiming for?</p>
+<ol type="1">
+<li>We want our solution to be easy to use; otherwise, we’ll not use
+it.</li>
+<li>It needs to fit on top of our existing work environment, which, in
+my case, is Debian or Ubuntu. (Footnote 2)</li>
+<li>It should be local as we do not want to expose our data to
+additional parties unless necessary. Otherwise, we could use <a
+href="https://fly.io">fly.io</a>’s <a
+href="https://fly.io/sprites">Sprites</a>. They are great if you do not
+mind exposing your data.</li>
+<li>The solution should have a minimal impact on performance. It
+shouldn’t noticeably slow down our work.</li>
+<li>It should provide reasonable isolation. We are not protecting
+against malware that intentionally tries to bypass our isolation; we
+just want to restrict what Claude can do. Stronger isolation is always
+better, though.</li>
+<li>It should provide a way to easily share a working directory, as
+we’ll need to share files with Claude.</li>
+<li>It should provide a persistent environment that can be easily
+modified and can tossed away when no longer needed. We’ll work on
+different projects, so being able to modify the environment easily is
+important.</li>
+</ol>
+<p>With this in mind, Docker seems like a good choice, as we are able to
+cover almost all of the requirements, except one. The only thing I had
+problems with was mounting a working directory so that files are owned
+by the unprivileged user inside the container. It seems that this is a
+common problem when running docker in rootless mode. I spent an hour or
+so trying to figure it out, but the working directory and its files were
+always owned by root.</p>
+<p>In the end, I tried <a href="https://podman.io/">Podman</a>, an
+alternative to Docker, and it worked out-of-the-box with the
+<code>--userns=keep-id</code> flag. Additionally, Podman runs as a
+regular user program by default, which is good, as you always want to
+reduce the amount of privileged code you are running. (Footnote 3)</p>
+<p>Next, we needed to define our base image, which we can later use to
+spin up new working environments when needed. For the initial image, we
+can take a standard image (e.g., Debian), create a new user, and install
+a few packages that we’ll usually need.</p>
+<pre><code>FROM debian:bookworm
+
+RUN apt-get update &amp;&amp; apt-get install -y sudo
+RUN useradd -m -u 1000 -s /bin/bash appuser
+RUN usermod -aG sudo appuser
+RUN echo &quot;appuser:password&quot; | chpasswd
+
+RUN apt update
+RUN apt install -y vim
+RUN apt install -y python3
+RUN apt install -y python3-pip
+RUN apt install -y ipython3 
+
+ENV TERM=xterm-256color
+
+USER appuser
+WORKDIR /home/appuser</code></pre>
+<p>After the image was built, we can run it and install additional
+packages if needed, including Claude Code. Note that we could also
+install Claude while building the image, but for me, it’s just easier to
+do it inside the container as I’ll not be rebuilding the image
+regularly.</p>
+<p>For each new environment that we need, we can just take the base
+image, run it, install any packages that are missing, and create a new
+image with <code>podman commit new-image-name</code>. The same way as we
+usually do it on our main system.</p>
+<p>If we’ll need to build images from scratch later on, we can always
+take the time then and create a Dockerfile with all the required
+packages.</p>
+<p>Now, each time we want to work with Claude on something, we move to
+the project directory and run:</p>
+<pre><code>podman run \
+  -it \
+  --userns=keep-id \
+  -v &quot;$PWD:/workspace&quot; \
+  -w /workspace \
+  my-image-with-claude bash</code></pre>
+<p>This runs <code>my-image-with-claude</code> with project directory
+mounted under <code>/workspace</code>. Everything in the
+<code>/workspace</code> is visible to Claude, and whatever changes
+Claude makes there will persist after we exit the container. If we want
+to expose new files to Claude, we just move them in to the projects
+directory. Simple.</p>
+<p>This setup worked for me thus far and it can be easily extended for
+any project. Note that this is not the most secure solution in terms of
+isolation, and we might also want to limit which website Claude can talk
+to. However, it works out of the box, it’s really simple to use, and
+it’s much better than running Claude directly without any isolation.</p>
+<p><strong>Footnote 1</strong>: We can achieve a similar workflow using
+virtualization software on top of our primary operating system (OS),
+such as VirtualBox. But in QubesOS, the idea of using multiple VMs to
+isolate your work is baked into the OS. QubesOS makes it easy to follow
+this workflow, keep things isolated, and avoid skipping it when it’s
+inconvenient.</p>
+<p><strong>Footnote 2</strong>: We can always opt for a safer but more
+inconvenient solution if we discard this requirement.</p>
+<p><strong>Footnote 3</strong>: Note that Docker and Podman are standard
+solutions, so adjusting the setup later on will probably not be a
+problem.</p></article>
+    </main>
+  </body>
+</html>
