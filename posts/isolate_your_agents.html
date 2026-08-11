@@ -94,7 +94,6 @@ RUN useradd -m -u 1000 -s /bin/bash appuser
 RUN usermod -aG sudo appuser
 RUN echo &quot;appuser:password&quot; | chpasswd
 
-RUN apt update
 RUN apt install -y vim
 RUN apt install -y python3
 RUN apt install -y python3-pip
