@@ -29,10 +29,10 @@ wrong in one of the environments, which eventually will, we can be
 reasonably sure that other environments and documents within them, are
 safe.</p>
 <p>Additionally, QubesOS allows us to keep our environments clean. If we
-want to try something out, we can just spin up a new environment
-(essentially a new virtual machine (VM)), install the packages that we
-need, do the experiment, and discard the environment when it’s no longer
-needed. The other environments remain unchanged. (Footnote 1)</p>
+want to try something out, we can just spin up a new environment,
+essentially a new virtual machine, install the packages that we need, do
+the experiment, and discard the environment when it’s no longer needed.
+The other environments remain unchanged. (Footnote 1)</p>
 <p>How is this related to AI agents?</p>
 <p>Running <a href="https://claude.com/product/claude-code">Claude
 Code</a> locally in auto mode is reckless, as its hard to know what
@@ -42,7 +42,7 @@ system were touched by Claude.</p>
 <p>I’m sure Claude Code’s documentation explains what Claude actually
 does and when it asks for permission, but I don’t want to read through
 Claude’s documentation every time there is an update, and I don’t trust
-Claude to exhaustively enforce the rules described in its
+Claude Code to exhaustively enforce the rules described in its
 documentation.</p>
 <p>This makes Claude Code a perfect candidate for running in an isolated
 environment with access only to the files we allow it to see and use.
@@ -78,15 +78,16 @@ by the unprivileged user inside the container. It seems that this is a
 common problem when running docker in rootless mode. I spent an hour or
 so trying to figure it out, but the working directory and its files were
 always owned by root.</p>
-<p>In the end, I tried <a href="https://podman.io/">Podman</a>, an
-alternative to Docker, and it worked out-of-the-box with the
+<p>In the end, I decided to go with <a
+href="https://podman.io/">Podman</a>, an alternative to Docker, where
+sharing the working directory worked out-of-the-box with the
 <code>--userns=keep-id</code> flag. Additionally, Podman runs as a
 regular user program by default, which is good, as you always want to
 reduce the amount of privileged code you are running. (Footnote 3)</p>
-<p>Next, we needed to define our base image, which we can later use to
-spin up new working environments when needed. For the initial image, we
-can take a standard image (e.g., Debian), create a new user, and install
-a few packages that we’ll usually need.</p>
+<p>Next, we needed to define our base image, which we can use to spin up
+new working environments when needed. For the initial image, we can take
+a standard image (e.g., Debian), create a new user, and install a few
+packages that we’ll usually need.</p>
 <pre><code>FROM debian:bookworm
 
 RUN apt-get update &amp;&amp; apt-get install -y sudo
@@ -133,13 +134,15 @@ directory. Simple.</p>
 any project. Note that this is not the most secure solution in terms of
 isolation, and we might also want to limit which website Claude can talk
 to. However, it works out of the box, it’s really simple to use, and
-it’s much better than running Claude directly without any isolation.</p>
+it’s much better than running Claude Code directly without any
+isolation.</p>
 <p><strong>Footnote 1</strong>: We can achieve a similar workflow using
 virtualization software on top of our primary operating system (OS),
-such as VirtualBox. But in QubesOS, the idea of using multiple VMs to
-isolate your work is baked into the OS. QubesOS makes it easy to follow
-this workflow, keep things isolated, and avoid skipping it when it’s
-inconvenient.</p>
+such as VirtualBox. But in QubesOS, the idea of using multiple virtual
+machines to isolate your work is baked into the OS. Qubes OS makes it
+easy to get your work done while keeping things isolated, and it helps
+you stay mindful of exposing your data by reminding you when you’re
+about to share something across isolated environments.</p>
 <p><strong>Footnote 2</strong>: We can always opt for a safer but more
 inconvenient solution if we discard this requirement.</p>
 <p><strong>Footnote 3</strong>: Note that Docker and Podman are standard
